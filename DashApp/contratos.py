@@ -77,34 +77,10 @@ layout = html.Div([
                     ], style={'display':'inline-block'})
             ], className="slider-filtros mb-4"),
             
-            # html.Div([
-            #         html.Div([
-            #             html.Button(html.Img(src="assets/imgs/ellipsis-h-solid.png",className="botao-limpa", id="img"), id="btn", className="btn-exportacao"),
-            #             Download(id="download")
-            #         ]),
-            #         dbc.FormGroup(
-            #             [
-            #                 dbc.Checklist(
-            #                     options=[
-            #                         {"label": "Todos", "value": 'TD'},
-            #                     ],
-            #                     value=['TD'],
-            #                     id="checklist-tipo-contrato-todos",
-            #                 ),
-            #             ], id="check-list-tipo-contrato", className="dropdown-exportacao-content"
-            #         ),
-            #     ],className="dropdown-exportacao"),
-            # html.A(, id='my-link'),
             dcc.Loading(id="loading-2", children=[html.Div(id="container-tabela")], type="circle"),
            
-            # dash_table.DataTable(
-            #     id='tabela',
-            #     columns=[{"name": i, "id": i} for i in df.columns],
-            #     data=df.to_dict('records'),
-            #     style_table={'overflowX': 'auto'},
-            #     )
             ]
-            ,className="px-4 pt-4 pb-5"),    #dcc.Input(id="input-1", type="email", placeholder="name@example.com", className="form-control mt-4"),
+            ,className="px-4 pt-4 pb-5"),
         className="bg-branco"
     ),
     dbc.Modal(

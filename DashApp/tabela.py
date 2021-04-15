@@ -27,22 +27,22 @@ style_data_conditional=[
     }
 ]
 
-tabela2 = {}
-for x in range(262):
-    tabela2["Colunaaaaaa" + str(x)] = []
-    for y in range(1200):
-        if x == 6:
-            tabela2["Colunaaaaaa" + str(x)].append("Lin - {} Coluna maior {} ".format(y,x))
-        else:
-            tabela2["Colunaaaaaa" + str(x)].append("Lin - {} Col {} ".format(y,x))
-
-#locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-
+#Código gerador de uma tabela de teste
+# tabela2 = {}
+# for x in range(262):
+#     tabela2["Colunaaaaaa" + str(x)] = []
+#     for y in range(1200):
+#         if x == 6:
+#             tabela2["Colunaaaaaa" + str(x)].append("Lin - {} Coluna maior {} ".format(y,x))
+#         else:
+#             tabela2["Colunaaaaaa" + str(x)].append("Lin - {} Col {} ".format(y,x))
 
 
 
 
-# DEFINIÇÃO DA FUNÇÃO DA TABELA DOS CONTRATOS
+
+
+############## Início da função que constrói a tabela da aba contratos ####################
 
 
 
@@ -57,10 +57,12 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         datas = funcoes.remove_repetidos(datas)
         datas.sort(key=lambda l: l.split('-')[2] + '-' + l.split('-')[1] + '-' + l.split('-')[0])
         
+        # Cópia de contrato  
         contratos = {}
         for chave in contrato.keys():
             contratos.update({chave: contrato[chave]}) 
-   
+
+        # Elimina contratos da copia do objeto contrato, caso ele entre na lógica do filtro.
         for x in range(len(contratos.keys()) -1,-1,-1):
             idContrato = list(contratos.keys())[x]
             if filtros['TIPO DE CONTRATO']:
@@ -113,7 +115,9 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             'TIPO DE FONTE': [],
         #  'PREÇO NA DATA DO LEILÃO': [], 
         #   'REAJUSTE': []}
-        } 
+        }
+         
+        # Põe na tabela as informações dos contratos
         for cntKey in contratos.keys():
             tabela['ID'].append(contratos[cntKey]['ID'])
             tabela['TIPO DE CONTRATO'].append(contratos[cntKey]['TIPO DE CONTRATO'])
@@ -134,6 +138,7 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         if mes_ano == 'Mensal':
             
             for x in range(len(datas) -1,-1,-1):
+                # Filtro das datas de acordo com o DatePicker/Slider
                 data = date(int(datas[x].split('-')[2]),int(datas[x].split('-')[1]),int(datas[x].split('-')[0]))
                 inicio = date(int(inicioData.split('-')[0]),int(inicioData.split('-')[1]),int(inicioData.split('-')[2]))
                 fim = date(int(fimData.split('-')[0]),int(fimData.split('-')[1]),int(fimData.split('-')[2]))
@@ -147,6 +152,7 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             for data in datas:
                 tabela.update({data:[]})
             
+            # Resgata os valores de cada contrato em cada data dentro do escopo das datas
             cont = 0
             mw = 0
             keys = valorContrato.keys()
@@ -167,6 +173,7 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
                     mw = 0
                 
             #print(tabela)    
+            # Muda o formato da data para ser apresentada
             for data in datas:
                 dataptBr = funcoes.transforma_data(data)
                 dataptBr = funcoes.data_ptBr(dataptBr).upper()
@@ -185,8 +192,8 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             for ano in anos:
                 tabela.update({ano:[]})
             
+            # Resgata os valores de cada contrato em cada data dentro do escopo das datas
             mw = 0
-            
             keys = valorContrato.keys()
             for ano in anos:
                 for idContrato in tabela['ID']:
@@ -214,7 +221,10 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         return tabela
     else:
         
+        # Modifica o nome da variável para melhorar o contexto
         resumido = contrato
+        
+        # Cópia de resumido
         resumidos = {}
         for chave in resumido.keys():
             resumidos.update({chave: resumido[chave]}) 
@@ -226,6 +236,7 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         datas = funcoes.remove_repetidos(datas)
         datas.sort(key=lambda l: l.split('-')[2] + '-' + l.split('-')[1] + '-' + l.split('-')[0])
         
+        # Elimina contratos resumidos da copia do objeto resumido, caso ele entre na lógica do filtro.
         for x in range(len(resumidos.keys()) -1,-1,-1):
             idResumido = list(resumidos.keys())[x]
             if filtros['TIPO DE CONTRATO']:
@@ -247,6 +258,7 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             'DATA': [],
         }     
         
+        # Resgata informações do contrato a partir do Id dos objetos resumidos
         ids=[]
         for rsm in resumidos.keys():
             ids.append(rsm[:-11])
@@ -262,6 +274,7 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             
             
             for x in range(len(datas) -1,-1,-1):
+                # Filtro das datas de acordo com o DatePicker/Slider
                 data = date(int(datas[x].split('-')[2]),int(datas[x].split('-')[1]),int(datas[x].split('-')[0]))
                 inicio = date(int(inicioData.split('-')[0]),int(inicioData.split('-')[1]),int(inicioData.split('-')[2]))
                 fim = date(int(fimData.split('-')[0]),int(fimData.split('-')[1]),int(fimData.split('-')[2]))
@@ -275,8 +288,8 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             for data in datas:
                 tabela.update({data:[]})
         
-            mw = 0
-         
+            # Resgata os valores para cada tipo de contrato resumido ao longo das datas.
+            mw = 0 
             for data in datas:
                 for x in range(len(tabela['TIPO DE CONTRATO'])):
                     idResumido = str(tabela['TIPO DE CONTRATO'][x] + ';' + tabela['TIPO DE LEILÃO'][x] + ';' + tabela['PRODUTO'][x] + ';' + tabela['DATA'][x] + ';' + data)
@@ -288,7 +301,8 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
                         break
                     tabela[data].append( str(round(mw, 5)).replace('.',',') )
                     mw = 0
-                    
+            
+            # Muda o formato da data para ser apresentada
             for data in datas:
                 dataptBr = funcoes.transforma_data(data)
                 dataptBr = funcoes.data_ptBr(dataptBr).upper()
@@ -300,7 +314,8 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             anos = funcoes.remove_repetidos(map(funcoes.separa_anos,datas))
             for ano in anos:
                 tabela.update({ano:[]})
-                
+            
+            # Resgata os valores para cada tipo de contrato resumido ao longo das datas.
             mw = 0
             for x in range(len(tabela['TIPO DE CONTRATO'])):
                 for data in datas:
@@ -321,6 +336,7 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         return tabela
     
   
+############## Fim da função que constrói a tabela da aba contratos ####################
   
   
   
@@ -332,13 +348,13 @@ def constroi_tabela_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_an
   
   
   
-  
-  
+############## Início da função que constrói a tabela da aba balanço ####################
     
     
 
 def constroi_tabela_balanco(balanco,inicioData,fimData,mes_ano):
     
+    # Cópia de balanco
     balanço = []
     for blc in balanco:
         balanço.append(blc)
@@ -354,6 +370,7 @@ def constroi_tabela_balanco(balanco,inicioData,fimData,mes_ano):
     if mes_ano == 'Mensal':
         
         for x in range(len(balanço) -1,-1,-1):
+            # Filtro das datas de acordo com o DatePicker/Slider
             data = date(int(balanço[x]['data'].split('-')[2]),int(balanço[x]['data'].split('-')[1]),int(balanço[x]['data'].split('-')[0]))
             inicio = date(int(inicioData.split('-')[0]),int(inicioData.split('-')[1]),int(inicioData.split('-')[2]))
             fim = date(int(fimData.split('-')[0]),int(fimData.split('-')[1]),int(fimData.split('-')[2]))
@@ -362,6 +379,7 @@ def constroi_tabela_balanco(balanco,inicioData,fimData,mes_ano):
             else:
                 balanço.pop(x) 
         
+        # Põe na tabela as informações do balanço
         for blc in balanço:
             tabela['DATA'].append(blc['data'])
             tabela['TOTAL CONTRATOS'].append(blc['total_mwh'])
@@ -378,6 +396,7 @@ def constroi_tabela_balanco(balanco,inicioData,fimData,mes_ano):
             anos.append(blc['data'])
         anos = funcoes.remove_repetidos(map(funcoes.separa_anos,anos))
         
+        # Calcula a soma anual das informações do balanço
         mwh = 0
         carga = 0
         for ano in anos:
@@ -398,6 +417,7 @@ def constroi_tabela_balanco(balanco,inicioData,fimData,mes_ano):
         return tabela
     
     
+############## Fim da função que constrói a tabela da aba balanço ####################   
     
     
     
@@ -409,8 +429,7 @@ def constroi_tabela_balanco(balanco,inicioData,fimData,mes_ano):
     
     
     
-    
-    
+############## Início da função que constrói a tabela da aba custos ####################
     
     
 def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,det_res,uni_tot):
@@ -424,10 +443,12 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         datas = funcoes.remove_repetidos(datas)
         datas.sort(key=lambda l: l.split('-')[2] + '-' + l.split('-')[1] + '-' + l.split('-')[0])
         
+        # Cópia de contrato 
         contratos = {}
         for chave in contrato.keys():
             contratos.update({chave: contrato[chave]}) 
-   
+
+        # Elimina contratos da copia do objeto contrato, caso ele entre na lógica do filtro.
         for x in range(len(contratos.keys()) -1,-1,-1):
             idContrato = list(contratos.keys())[x]
             if filtros['TIPO DE CONTRATO']:
@@ -482,6 +503,7 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             'REAJUSTE': []
         } 
         
+        # Põe na tabela as informações dos contratos
         for cntKey in contratos.keys():
             tabela['ID'].append(contratos[cntKey]['ID'])
             tabela['TIPO DE CONTRATO'].append(contratos[cntKey]['TIPO DE CONTRATO'])
@@ -504,6 +526,7 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         if mes_ano == 'Mensal':
             
             for x in range(len(datas) -1,-1,-1):
+                # Filtro das datas de acordo com o DatePicker/Slider
                 data = date(int(datas[x].split('-')[2]),int(datas[x].split('-')[1]),int(datas[x].split('-')[0]))
                 inicio = date(int(inicioData.split('-')[0]),int(inicioData.split('-')[1]),int(inicioData.split('-')[2]))
                 fim = date(int(fimData.split('-')[0]),int(fimData.split('-')[1]),int(fimData.split('-')[2]))
@@ -516,7 +539,8 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             
             for data in datas:
                 tabela.update({data:[]})
-                
+            
+            # Resgata os valores de cada contrato em cada data dentro do escopo das datas
             rs = 0
             keys = valorContrato.keys()
             for data in datas:
@@ -535,7 +559,8 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
                     tabela[data].append(round(rs,5))
                     rs = 0
                 
-            #print(tabela)    
+            #print(tabela)  
+            # Muda o formato da data para ser apresentada  
             for data in datas:
                 dataptBr = funcoes.transforma_data(data)
                 dataptBr = funcoes.data_ptBr(dataptBr).upper()
@@ -554,6 +579,7 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             for ano in anos:
                 tabela.update({ano:[]})
             
+            # Resgata os valores de cada contrato em cada data dentro do escopo das datas
             rs = 0
             mw = 0
             keys = valorContrato.keys()
@@ -588,7 +614,10 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         return tabela
     else:
         
+        # Modifica o nome da variável para melhorar o contexto
         resumido = contrato
+        
+        # Cópia de resumido
         resumidos = {}
         for chave in resumido.keys():
             resumidos.update({chave: resumido[chave]}) 
@@ -600,6 +629,7 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         datas = funcoes.remove_repetidos(datas)
         datas.sort(key=lambda l: l.split('-')[2] + '-' + l.split('-')[1] + '-' + l.split('-')[0])
         
+        # Elimina contratos resumidos da copia do objeto resumido, caso ele entre na lógica do filtro.
         for x in range(len(resumidos.keys()) -1,-1,-1):
             idResumido = list(resumidos.keys())[x]
             if filtros['TIPO DE CONTRATO']:
@@ -621,6 +651,7 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             'DATA': [],
         }     
         
+        # Resgata informações do contrato a partir do Id dos objetos resumidos
         ids=[]
         for rsm in resumidos.keys():
             ids.append(rsm[:-11])
@@ -635,8 +666,8 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             
         if mes_ano == 'Mensal':
             
-            
             for x in range(len(datas) -1,-1,-1):
+                # Filtro das datas de acordo com o DatePicker/Slider
                 data = date(int(datas[x].split('-')[2]),int(datas[x].split('-')[1]),int(datas[x].split('-')[0]))
                 inicio = date(int(inicioData.split('-')[0]),int(inicioData.split('-')[1]),int(inicioData.split('-')[2]))
                 fim = date(int(fimData.split('-')[0]),int(fimData.split('-')[1]),int(fimData.split('-')[2]))
@@ -649,7 +680,8 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
         
             for data in datas:
                 tabela.update({data:[]})
-        
+
+            # Resgata os valores para cada tipo de contrato resumido ao longo das datas.
             rs = 0
             mw = 0
             for data in datas:
@@ -671,7 +703,8 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
                     #tabela[data].append(locale.currency(round(rs,5)))
                     tabela[data].append(round(rs,5))
                     rs = 0
-                    
+            
+            # Muda o formato da data para ser apresentada
             for data in datas:
                 dataptBr = funcoes.transforma_data(data)
                 dataptBr = funcoes.data_ptBr(dataptBr).upper()
@@ -684,6 +717,7 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             for ano in anos:
                 tabela.update({ano:[]})
             
+            # Resgata os valores para cada tipo de contrato resumido ao longo das datas.
             rs = 0    
             mw = 0
             for x in range(len(tabela['TIPO DE CONTRATO'])):
@@ -709,4 +743,4 @@ def constroi_tabela_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_an
             
         return tabela
     
-        
+############## Fim da função que constrói a tabela da aba custos ####################

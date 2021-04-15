@@ -6,9 +6,7 @@ from random import randint
 from .app import app
 from .uteis import funcoes
 from datetime import datetime,date
-#import locale
 
-#import contratos
 #Usadas anteriormente, talvez sejam úteis ainda
 #import plotly.express as px
 #import pandas as pd
@@ -17,7 +15,9 @@ fig = go.Figure()
 fig1 = go.Figure()
 grafico_selecionado = 'sub'
 template = ["plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none"]
-#locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+
+
+########### Ínicio da Função que gera o gráfico da aba contratos #################
 
 
 def gera_grafico_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,mwh_mwm,sub_tot):
@@ -73,6 +73,7 @@ def gera_grafico_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,m
     if mes_ano == 'Anual':      
         v=''  
     else: 
+        # Filtro das datas de acordo com o DatePicker/Slider
         for x in range(len(datas) -1,-1,-1):
             data = date(int(datas[x].split('-')[2]),int(datas[x].split('-')[1]),int(datas[x].split('-')[0]))
             inicio = date(int(inicioData.split('-')[0]),int(inicioData.split('-')[1]),int(inicioData.split('-')[2]))
@@ -82,14 +83,17 @@ def gera_grafico_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,m
             else:
                 datas.pop(x) 
     
+    # Cópia de valorContrato
     valoresContrato = {}
     for chave in valorContrato.keys():
         valoresContrato.update({chave: valorContrato[chave]})
-        
+    
+    # Cópia de contrato    
     contratos = {}
     for chave in contrato.keys():
         contratos.update({chave: contrato[chave]})
     
+    # Elimina contratos da copia do objeto contrato, caso ele entre na lógica do filtro.
     for x in range(len(contratos.keys()) -1,-1,-1):
         idContrato = list(contratos.keys())[x]
         if filtros['TIPO DE CONTRATO']:
@@ -131,6 +135,7 @@ def gera_grafico_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,m
     totalSul = 0
     keys = valoresContrato.keys()
     
+    # Soma os valores dos contratos para cada submercado ao longo do escopo atual das datas
     for x in range(len(datas)): 
         if mes_ano == 'Mensal':
             totalValor = 0
@@ -256,12 +261,14 @@ def gera_grafico_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,m
                
             
     
-        
+    # Muda o formato da data para ser apresentada    
     if mes_ano == 'Mensal':  
         datas = list(map(funcoes.transforma_data,datas))
         datas = list(map(funcoes.data_ptBr,datas))
     else:
         datas = funcoes.remove_repetidos(map(funcoes.separa_anos,datas))    
+        
+    # cria um traço numa figura com os valores coletados após a soma dos valores por submercado e total
     if sub_tot == 'sub':
         
         for i in range(4):
@@ -277,11 +284,13 @@ def gera_grafico_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,m
                         marker_color=valores[8]["cor"]
                         ))
     
+    # Modifica a descrição do eixo Y
     if mwh_mwm == 'MWm':
         fig.update_layout(yaxis=dict(title='MWm'))
     else:
         fig.update_layout(yaxis=dict(title='MWh'))
-        
+    
+    # Formatação do gráfico
     fig.update_layout(
         margin=dict(l=0, r=0, t=50, b=0),
         template=template[1],
@@ -312,6 +321,7 @@ def gera_grafico_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,m
     
     
     
+########### Fim da Função que gera o gráfico da aba contratos ################# 
     
     
     
@@ -326,8 +336,7 @@ def gera_grafico_cnt(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,m
     
     
     
-    
-    
+########### Ínicio da Função que gera o gráfico da aba balanço #################  
     
 
 
@@ -356,6 +365,7 @@ def gera_grafico_balanco(balanco,inicioData,fimData,mes_ano):
     if mes_ano == 'Anual':      
         datas = funcoes.remove_repetidos(map(funcoes.separa_anos,datas))  
     else: 
+        # Filtro das datas de acordo com o DatePicker/Slider
         for x in range(len(datas) -1,-1,-1):
             data = date(int(datas[x].split('-')[2]),int(datas[x].split('-')[1]),int(datas[x].split('-')[0]))
             inicio = date(int(inicioData.split('-')[0]),int(inicioData.split('-')[1]),int(inicioData.split('-')[2]))
@@ -365,10 +375,12 @@ def gera_grafico_balanco(balanco,inicioData,fimData,mes_ano):
             else:
                 datas.pop(x)
     
+    # Cópia de balanco
     balanço = []
     for blc in balanco:
         balanço.append(blc)
         
+    # Soma ou resgata os valores de total de contratos, carga e sobra para apresentar no gráfico
     for x in range(len(datas)):
         totalContratos = 0
         carga = 0
@@ -387,11 +399,13 @@ def gera_grafico_balanco(balanco,inicioData,fimData,mes_ano):
         valores[1]["valores"].append(carga)
         valores[2]["valores"].append(sobra)
     
+    # Muda o formato da data para ser apresentada
     if mes_ano == 'Mensal':  
         datas = list(map(funcoes.transforma_data,datas))
         datas = list(map(funcoes.data_ptBr,datas))
        
 
+    # Cria um traço numa figura com os valores coletados
     for i in range(3):
         fig.add_trace(go.Bar(x=datas,
                     y=valores[i]["valores"],
@@ -399,7 +413,7 @@ def gera_grafico_balanco(balanco,inicioData,fimData,mes_ano):
                     marker_color=valores[i]["cor"]
                     ))
 
-    
+    # Formatação do gráfico
     fig.update_layout(
         margin=dict(l=0, r=0, t=50, b=0),
         template=template[1],
@@ -429,6 +443,7 @@ def gera_grafico_balanco(balanco,inicioData,fimData,mes_ano):
     return fig
     
     
+########### Fim da Função que gera o gráfico da aba balanço #################
     
     
     
@@ -438,8 +453,7 @@ def gera_grafico_balanco(balanco,inicioData,fimData,mes_ano):
     
     
     
-    
-
+########### Ínicio da Função que gera o gráfico da aba custos #################
     
 def gera_grafico_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,uni_tot,sub_tot):
     
@@ -493,6 +507,7 @@ def gera_grafico_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,u
     if mes_ano == 'Anual':      
         v=''  
     else: 
+        # Filtro das datas de acordo com o DatePicker/Slider
         for x in range(len(datas) -1,-1,-1):
             data = date(int(datas[x].split('-')[2]),int(datas[x].split('-')[1]),int(datas[x].split('-')[0]))
             inicio = date(int(inicioData.split('-')[0]),int(inicioData.split('-')[1]),int(inicioData.split('-')[2]))
@@ -502,14 +517,17 @@ def gera_grafico_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,u
             else:
                 datas.pop(x) 
     
+    # Cópia de valorContrato
     valoresContrato = {}
     for chave in valorContrato.keys():
         valoresContrato.update({chave: valorContrato[chave]})
-        
+    
+    # Cópia de contrato
     contratos = {}
     for chave in contrato.keys():
         contratos.update({chave: contrato[chave]})
     
+    # Elimina contratos da copia do objeto contrato, caso ele entre na lógica do filtro.
     for x in range(len(contratos.keys()) -1,-1,-1):
         idContrato = list(contratos.keys())[x]
         if filtros['TIPO DE CONTRATO']:
@@ -557,6 +575,7 @@ def gera_grafico_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,u
     totalSulMWh = 0
     keys = valoresContrato.keys()
     
+    # Soma os valores dos contratos para cada submercado ao longo do escopo atual das datas
     for x in range(len(datas)): 
         if mes_ano == 'Mensal':
             totalValorReais = 0
@@ -719,13 +738,14 @@ def gera_grafico_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,u
                 totalSulMWh = 0
                
             
-    
-        
+    # Muda o formato da data para ser apresentada      
     if mes_ano == 'Mensal':  
         datas = list(map(funcoes.transforma_data,datas))
         datas = list(map(funcoes.data_ptBr,datas))
     else:
         datas = funcoes.remove_repetidos(map(funcoes.separa_anos,datas))    
+        
+    # cria um traço numa figura com os valores coletados após a soma dos valores por submercado e total
     if sub_tot == 'sub':
         for i in range(4):
             fig.add_trace(go.Bar(x=datas,
@@ -740,11 +760,13 @@ def gera_grafico_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,u
                         marker_color=valores[8]["cor"]
                         ))
 
+    # Modifica a descrição do eixo Y
     if uni_tot == 'Unitário':
         fig.update_layout(yaxis=dict(title='R$/MWh'))
     else:
         fig.update_layout(yaxis=dict(title='R$'))
 
+    # Formatação do gráfico
     fig.update_layout(
         margin=dict(l=0, r=0, t=50, b=0),
         template=template[1],
@@ -773,34 +795,11 @@ def gera_grafico_cts(contrato,valorContrato,filtros,inicioData,fimData,mes_ano,u
     return fig
     
     
-    
-    
-    
-        
-    
-    
-    
-    
+########### Fim da Função que gera o gráfico da aba contratos #################
     
     
 
-
-
-# @app.callback(
-#     Output('grafico', 'figure'),
-#     Input('selecao-grafico', 'value'))
-# def display_value(value):
-#     #global grafico_selecionado
-#     if value == 'sub':
-#        # grafico_selecionado = 'sub'
-#         fig.update_layout(transition_duration=500)
-#         return fig
-#     else:
-#         #grafico_selecionado = 'tot'
-#         fig1.update_layout(transition_duration=500)
-#         return fig1
-    
-    
+# Função que retorna uma tabela exportável a partir da figure atual do gráfico    
 def retorna_grafico(fig):
     tabelaDoGrafico = {' ':[]}
     fig_selected = fig

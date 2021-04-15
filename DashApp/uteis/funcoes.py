@@ -9,7 +9,7 @@ def remove_repetidos(lista):
     l.sort()
     return l
 
-
+# Função legado para transforma um dicionio numa string no formato csv.
 def dictToString(dicionario):
     string = u''
     cabecalho = dicionario.keys()
@@ -25,6 +25,7 @@ def dictToString(dicionario):
         
     return string
 
+# A partir de uma data e o número de meses retorna uma outra data com meses a mais ou a menos
 def add_months(sourcedate, months):
     month = sourcedate.month - 1 + months
     year = sourcedate.year + month // 12
@@ -32,23 +33,27 @@ def add_months(sourcedate, months):
     day = min(sourcedate.day, calendar.monthrange(year,month)[1])
     return date(year, month, day)
 
+# Retorna a diferença de meses entre duas datas
 def diff_month(d1, d2):
     return (d1.year - d2.year) * 12 + d1.month - d2.month
 
+# A partir de um array de datas, retorna somente o ano da data.
 def separa_anos(data):
     arrayData = data.split('-')
     return arrayData[2]
 
+# Retorna o número de horas num ano
 def numero_horas_ano(ano):
     inicio = date(int(ano),1,1)
     fim = date(int(ano) + 1,1,1)
     numeroHoras = (fim - inicio).days * 24
     return numeroHoras
 
+# Transforma o formato 01-01-2019 para JAN/2019
 def transforma_data(string):
     return datetime.strptime(string, "%d-%m-%Y").strftime("%b/%Y").capitalize()
 
-
+# Pega um valor no formato FEB/2019 e traduz.
 def data_ptBr(string):
     arrayString = string.split('/')
     if arrayString[0] == "Jan":
@@ -78,6 +83,7 @@ def data_ptBr(string):
     else:
         return string
 
+# Descrição do mês em que os dados estão consolidados, se for depois do dia 15 eles já estão passíveis de estar consolidados.
 def mesAnoConsolidado():
     if int(date.today().strftime("%d")) >= 15:
         consolidado = add_months(date.today(), -2) 

@@ -12,6 +12,8 @@ from datetime import date
 from .uteis import funcoes
 
 
+# Estilo da tabela, definido aqui porque não há como aplicar classe no dashTable.
+
 style_header={
     'backgroundColor': '#0D6ABF',
     'color': 'white',
@@ -39,6 +41,8 @@ style_data_conditional=[
     }
 ]
 
+
+# Função que retorna uma tabela a partir das informações do IPCA
 
 def controiTabelaIpca(ipca,inicioData,fimData,mes_ano):
     
@@ -96,6 +100,11 @@ def controiTabelaIpca(ipca,inicioData,fimData,mes_ano):
             
         return tabela
 
+
+
+
+
+# Função que retorna uma figure a partir das informações do IPCA para gerar um gráfico
 
 def gera_grafico_ipca(ipca,inicioData,fimData,mes_ano):
     
@@ -170,6 +179,9 @@ def gera_grafico_ipca(ipca,inicioData,fimData,mes_ano):
     return fig
     
 
+
+
+# Layout do modal IPCA
 
 ipca = [
     dbc.ModalHeader([

@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 from .uteis import funcoes
 
+# Resgata todos os valores de diferentes de 'TIPO DE CONTRATO','SUBMERCADO',TIPO DE LEILÃO' e etc que estão presentes na variável "contrato"
 def reuni_filtros(contrato):
     filtros = {
         'TIPO DE CONTRATO':[],

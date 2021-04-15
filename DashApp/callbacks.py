@@ -15,7 +15,7 @@ from .app import app
 from . import contratos 
 from . import balanco
 from . import custos
-from .dados import contratoB,valorContratoB,balancoA,resumido,custosContratosA,ipca
+from .dados import contratoB,resumido,ipca
 from .uteis import funcoes
 from . import filtros
 import requests
@@ -40,21 +40,19 @@ custosContratos = {}
 balanço = []
 ipca = []
 
-tabela = {}#tb.constroi_tabela_cnt_cts(contrato,valorContrato,flts,'2019-1-1','2023-12-1','Mensal','Detalhado','MWh')
-df = pd.DataFrame() #tabela
-#grafico_atual = gf.gera_grafico_cnt_cts(contrato,valorContrato,flts,'2019-1-1','2023-12-1','Mensal','MWh',True)
-df2 = pd.DataFrame() #gf.retorna_grafico()
+tabela = {}
+df = pd.DataFrame()
+df2 = pd.DataFrame()
 
 
 
 
-# @app.callback(Output('output-url', 'children'),
-#               Input('url1', 'pathname'))
-# def valor_url(pathname):
-#     global caminho
-#     caminho = pathname
-#     return ''
 
+################################### INÍCIO CALLBACK PRINCIPAL ##################################################
+
+
+
+# Callback Principal da aplicação, com ela é possível atualizar a tabela, o gráfico e alguns títulos a partir de mudança de qualquer um dos filtros e menus presentes nas páginas
 @app.callback(
     Output('container-tabela', 'children'),
     Output('container-grafico', 'children'),
@@ -93,6 +91,7 @@ def update_grafico_tabela(n_mes,n_ano,n_mes_ano, n_det_res, n_unidade, start_dat
     ctx = dash.callback_context
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
+    # Verificando o escopo de tempo, detalhamento e unidade
     if n_mes_ano == None:
         displayDatePicker = {'display': 'block'}
         displayRangeSlider = 'd-block'
@@ -156,7 +155,7 @@ def update_grafico_tabela(n_mes,n_ano,n_mes_ano, n_det_res, n_unidade, start_dat
     #     'FIM DE SUPRIMENTO': False
     # }
     
-    
+    # Tratamento dos filtros
     flts = {
         'TIPO DE CONTRATO':[],
         'SUBMERCADO': [],
@@ -174,7 +173,8 @@ def update_grafico_tabela(n_mes,n_ano,n_mes_ano, n_det_res, n_unidade, start_dat
     b5 = True 
     b6 = True 
     b7 = True
-    b8 = True                  
+    b8 = True
+    # Checando a necessidade de aplicar os filtros em cada uma das opções                  
     for chave in flts.keys():
         for i in filtros.reuni_filtros(contrato)[chave]:
             if chave == 'TIPO DE CONTRATO':
@@ -202,6 +202,7 @@ def update_grafico_tabela(n_mes,n_ano,n_mes_ano, n_det_res, n_unidade, start_dat
                 if b8:
                     b8 = i in fim_suprimento_value       
         
+    # Caso haja necessidade de aplicar algum filtro, aqui é passado um array com os valores a serem filtrados para cada chave que precisar aplicar um filtro.
     if tipo_contrato_value == [] or b1 :
         flts['TIPO DE CONTRATO'] = False
     else:
@@ -266,7 +267,7 @@ def update_grafico_tabela(n_mes,n_ano,n_mes_ano, n_det_res, n_unidade, start_dat
             if not condicao:
                 flts['FIM DE SUPRIMENTO'].append(i)    
             
-        
+    # Definição dos valores das páginas, valores como: o gráfico, a tabela, o título da página, o título do grafico e etc
     if url == '/' or url == '/contratos':
         
         titulo_pagina = 'Contratos > ' + mes_ano_atual + ' > ' + det_res_atual + ' > ' + mwh_mwm_atual
@@ -321,6 +322,13 @@ def update_grafico_tabela(n_mes,n_ano,n_mes_ano, n_det_res, n_unidade, start_dat
 
 
 
+
+################################### FIM CALLBACK PRINCIPAL ##################################################
+
+
+
+
+# Callback para modificar o estado de de visivel e oculto do modal de filtros
 @app.callback(
     Output("modal", "is_open"),
     [Input("open", "n_clicks"), Input("close", "n_clicks")],
@@ -331,6 +339,8 @@ def toggle_modal(n1, n2, is_open):
         return not is_open
     return is_open
 
+
+# Callback para modificar o estado de de visivel e oculto do modal de ipca
 @app.callback(
     Output("ipca", "is_open"),
     [Input("open2", "n_clicks"), Input("close2", "n_clicks")],
@@ -342,6 +352,7 @@ def toggle_ipca(n1, n2, is_open):
     return is_open
 
 
+# Callback para Exportar os dados do gráfico
 @app.callback(Output("download-grafico", "data"), [Input("btn-exp-grafico", "n_clicks"),Input('url1', 'pathname'),Input('grafico', 'figure')])
 def func(n_nlicks,url,fig):
     ctx = dash.callback_context
@@ -360,7 +371,9 @@ def func(n_nlicks,url,fig):
         if n_nlicks != None:
             df2 = pd.DataFrame(gf.retorna_grafico(fig))
             return send_data_frame(df2.to_excel, nome_arquivo, index=False)
+        
 
+# Callback para Exportar os dados da tabela
 @app.callback(Output("download-tabela", "data"), [Input("btn-exp-tabela", "n_clicks"),Input('url1', 'pathname'),Input('tabela', 'data')])
 def func(n_nlicks,url,dados):
     ctx = dash.callback_context
@@ -380,6 +393,8 @@ def func(n_nlicks,url,dados):
         if n_nlicks != None:
             return send_data_frame(df.to_excel, nome_arquivo, index=False)
 
+
+# Callback que sincroniza os valores do date-picker com o slider
 @app.callback(
     Output('date-picker', 'start_date'),
     Output('date-picker', 'end_date'),
@@ -405,6 +420,7 @@ def update_slider(start_date,end_date,slider_value,url):
             
             return date(2019,1,1),date(2020,12,1),[0,24]
     else:
+        # Caso a página seja a de custos, os valores começam a partir de 2020
         if trigger_id == 'date-picker':
             inicio = funcoes.diff_month(date.fromisoformat(start_date),date(2020,1,1))
             fim = funcoes.diff_month(date.fromisoformat(end_date),date(2020,1,1))
@@ -418,6 +434,7 @@ def update_slider(start_date,end_date,slider_value,url):
         
 
 
+# Callback que sincroniza os valores do date-picker com o slider do modal de IPCA
 @app.callback(
     Output('date-picker-ipca', 'start_date'),
     Output('date-picker-ipca', 'end_date'),
@@ -441,6 +458,8 @@ def update_slider_ipca(start_date,end_date,slider_value):
         return date(2019,1,1),date(2040,12,1),[0,263]
     
 
+
+# Callback Principal do modal IPCA para a mudança de escopo de tempo
 @app.callback(
     Output('container-tabela-ipca', 'children'),
     Output('grafico-ipca', 'figure'),
@@ -535,7 +554,7 @@ def update_grafico_tabela_ipca(n_mes,n_ano, start_date, end_date):
 
 
     
-
+# Callback responsável pela mudança de página e recuperação dos dados do Banco de Dados.
 @app.callback(Output('page-content', 'children'),
               Output('contratos', 'className'),
               Output('balanco', 'className'),

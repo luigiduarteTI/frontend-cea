@@ -1,6 +1,6 @@
 
 
-/* Estilos Padrões do cabeçalho e da barra lateral */
+/* Início Estilos Padrões do cabeçalho e da barra lateral */
 
 
 .bg-engenho {
@@ -141,9 +141,11 @@
     
 }
 
+/* Fim Estilos Padrões do cabeçalho e da barra lateral */
 
-/* Estilos das páginas */
 
+
+/* Início Estilos das páginas */
 
 
 .conteudo{
@@ -296,22 +298,40 @@
 }
 
 
-.modal-item{
-    width: 246px;
-    height: 100px;
-    background-color: #F8F8F8;
-    border: 2px solid #DBDBDB;
-    border-radius: 2px;
-    margin: 15px;
-    display: inline-block;
-    padding: 10px;
+.btn-exportacao{
+    background-color: #EEEBEB;
+    border-color: #D5D8DE;
+    color: #4479f5;
+    border-radius: 0;
 }
 
-.modal-item h5{
-    color: #002F9C;
-    font-size: 17px;
-    margin: 7px 0px 10px 0px;
+  
+.show>.btn-exportacao.dropdown-toggle{
+    background-color: #EEEBEB;
+    border-color: #D5D8DE;
+    color: #4479f5;
+    box-shadow: 0px;
 }
+
+.btn-check:focus+.btn-exportacao, .btn-exportacao:focus {
+    background-color: #EEEBEB;
+    border-color: #D5D8DE;
+    color: #4479f5;
+    box-shadow: 0px;
+}
+
+.btn-exportacao:hover{
+    background-color: #4479f5;
+    border-color: #D5D8DE;
+    color: #EEEBEB;
+}
+
+.btn-exportacao:active{
+    background-color: #4450f5;
+    border-color: #D5D8DE;
+    color: #EEEBEB;
+}
+
 
 
 .table-responsive-False{
@@ -352,6 +372,28 @@
 
 
 
+/* Fim Estilos das páginas */
+
+
+
+/* Início Estilos do Modal de Filtros */
+
+.modal-item{
+    width: 246px;
+    height: 100px;
+    background-color: #F8F8F8;
+    border: 2px solid #DBDBDB;
+    border-radius: 2px;
+    margin: 15px;
+    display: inline-block;
+    padding: 10px;
+}
+
+.modal-item h5{
+    color: #002F9C;
+    font-size: 17px;
+    margin: 7px 0px 10px 0px;
+}
 
 
 .dropbtn {
@@ -425,45 +467,12 @@
   }
   */
 
-.btn-exportacao{
-    background-color: #EEEBEB;
-    border-color: #D5D8DE;
-    color: #4479f5;
-    border-radius: 0;
-}
-
-  
-.show>.btn-exportacao.dropdown-toggle{
-    background-color: #EEEBEB;
-    border-color: #D5D8DE;
-    color: #4479f5;
-    box-shadow: 0px;
-}
-
-.btn-check:focus+.btn-exportacao, .btn-exportacao:focus {
-    background-color: #EEEBEB;
-    border-color: #D5D8DE;
-    color: #4479f5;
-    box-shadow: 0px;
-}
-
-.btn-exportacao:hover{
-    background-color: #4479f5;
-    border-color: #D5D8DE;
-    color: #EEEBEB;
-}
-
-.btn-exportacao:active{
-    background-color: #4450f5;
-    border-color: #D5D8DE;
-    color: #EEEBEB;
-}
+/* Fim Estilos do Modal de Filtros */
 
 
 
 
-
-/* Modal IPCA */
+/* Estilos do Modal IPCA Início */
 
 #ipca .modal-header{
     padding: 0.6rem 1rem;
@@ -555,3 +564,5 @@
 #grafico-ipca{
     height: 500px;
 }
+
+/* Estilos do Modal IPCA Fim */
